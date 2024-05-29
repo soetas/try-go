@@ -2,73 +2,174 @@ package main
 
 import (
 	"fmt"
-	"stdlib/random"
-	"unicode"
 )
 
-var (
-	version = "1.16.6"
-	module  = true
-	arch    = "amd64"
-)
+func Divmod(x, y int) (div, mod int) {
+	div = x / y
+	mod = x % y
+	return
+}
 
-const PI float64 = 3.14
+func Open(path string) (int, error) {
+	return 0, nil
+}
 
-const (
-	KB = 1 << (10 * (iota + 1))
-	MB
-	GB
-	TB
-	PB
-)
+type Devtool struct {
+	Debug bool
+}
 
-var swap = func(x, y int) (int, int) {
-	return y, x
+type Browser struct {
+	Name    string
+	Version string
+	Engine  string
+	Devtool
+}
+
+func (b *Browser) Update(version string) {
+	b.Version = version
+}
+
+type Component interface {
+	Render() string
+}
+
+type Button struct{}
+type Text struct{}
+type Input struct{}
+
+func (button *Button) Render() string {
+	return "button"
+}
+
+func (text *Text) Render() string {
+	return "text"
+}
+
+func (input *Input) Render() string {
+	return "input"
+}
+
+type Any interface{}
+
+func Typeof(value interface{}) string {
+	switch value.(type) {
+	case string:
+		return "string"
+	case int:
+		return "int"
+	case bool:
+		return "bool"
+	case float64:
+		return "float64"
+	default:
+		return "unknown"
+	}
+}
+
+func Isbool(value interface{}) bool {
+	if _, ok := value.(bool); ok {
+		return true
+	} else {
+		return false
+	}
 }
 
 func main() {
-	var account string
-	var points int
-	var rate float32
-	var good bool
-	var gender rune = '👨'
-	var pointer uintptr
+	colors := [5]string{}
+	langs := [...]string{2: "go", 5: "python"}
 
-	fmt.Printf("%s %d %.2f %t %c\n", account, points, rate, good, gender)
-	fmt.Println(unicode.IsSpace('\r'))
-	fmt.Printf("%x %c %c\n", gender, '\u4e25', '\U0001f468')
-	fmt.Println(`\n\t\r\u\U`, len("你好，golang"))
+	colors[0] = "green"
+	colors[3] = "tomato"
 
-	var template = `
-	<div>
+	for index, color := range colors {
+		fmt.Printf("%d: %s\n", index, color)
+	}
 
-	</div>
-	`
+	fmt.Println(len(langs))
 
-	fmt.Println(template, []rune("golang"), pointer)
+	slice := colors[1:4]
 
-	email := "hezhas@kej.pn"
+	slice[0] = "pink"
 
-	fmt.Println(email, version, module, arch, KB, GB)
-	fmt.Println(10 % 3)
+	fmt.Printf("%v %v %d %d\n", slice, colors, len(slice), cap(slice))
 
-	var p *int = new(int)
+	skills := make([]string, 2)
 
-	fmt.Printf("%v %d\n", p, *p)
-	fmt.Println(swap(90, 78))
+	skills[0] = "go"
+	skills[1] = "linux"
 
-	random.Choice(67, true, "")
+	fmt.Printf("%p \n", skills)
 
-	if age := 18; age <= 30 {
-		fmt.Println("yes")
+	skills = append(skills, "docker")
+
+	fmt.Printf("%p %d %T\n", skills, cap(skills), skills)
+
+	if cap(skills) != 2 {
+		fmt.Println("")
 	} else {
-		fmt.Println("no")
+		fmt.Println("")
 	}
 
-	users := []string{"Benjamin Carson", "Lenora Weaver", "Ricky Jefferson"}
-
-	for index, user := range users {
-		fmt.Printf("%d => %s\n", index, user)
+	for i := 0; i < 5; i++ {
+		fmt.Println(i)
 	}
+
+	if f, err := Open(""); err == nil {
+		fmt.Println(f)
+	}
+
+	for {
+		break
+	}
+
+	user := map[string]interface{}{
+		"username": "Jim Waters",
+		"email":    "apietne@zam.fk",
+		"country":  "Liberia",
+	}
+
+	for key, value := range user {
+		fmt.Printf("%s => %v\n", key, value)
+	}
+
+	server := make(map[string]interface{})
+
+	server["hostname"] = "localhost"
+	server["port"] = 5713
+	server["proxy"] = []string{
+		"",
+		"",
+		"",
+	}
+
+	delete(server, "port")
+
+	fmt.Println(server)
+
+	var browser Browser
+
+	browser.Name = "chrome"
+	browser.Version = "161.11.0"
+	browser.Engine = "v8"
+
+	opera := Browser{
+		Name:    "opera",
+		Version: "100.45.11",
+	}
+
+	(&opera).Version = "89.21.67"
+
+	ie := new(Browser)
+
+	ie.Name = "IE"
+
+	ie.Update("1.0.0")
+
+	fmt.Println(browser.Engine == "", browser, opera, *ie)
+	fmt.Println(ie.Debug)
+
+	var comp Component = &Input{}
+
+	fmt.Println(comp.Render(), Typeof(.0), Typeof(false), Isbool(' '), Isbool(true))
 
 }
