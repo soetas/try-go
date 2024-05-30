@@ -1,0 +1,22 @@
+# 锚点和引用
+apiDoc: &apiDoc
+  base: &base http://localhost:5713
+  api:
+    posts: *base/api/posts
+
+server:
+  host: localhost
+  port: 5713
+  database:
+    username: root
+    passwd: 123456+
+  open: false
+  <<: *apiDoc
+
+require: [collections, json, datetime]
+
+scripts:
+  - dev 
+  - test
+  - deploy 
+
