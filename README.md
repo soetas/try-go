@@ -12,6 +12,9 @@ func init() {
   defer func() {
     // TODO ...
   }()
+
+LOOP:
+  // TODO ...
   
 }
 
