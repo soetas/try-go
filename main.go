@@ -2,125 +2,84 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"math"
-	"reflect"
-	_ "unsafe"
+	"net/http"
+	"text/template"
 )
 
-func Between(value, min, max int) bool {
-	fmt.Println("Between func called ...")
+const host, port = "localhost", 5713
 
-	if value >= min && value < max {
-		return true
-	} else {
-		return false
+type IndexHandler struct{}
+type AboutHandler struct{}
+
+func (handler *IndexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	tpl, err := template.ParseFiles("")
+
+	if err == nil {
+		tpl.Execute(w, "")
 	}
+
 }
 
-type User struct {
-	Account string `required:"true" maxLength:"8"`
-	Email   string ``
+func (handler *AboutHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("about me"))
 }
 
-const (
-	RECT = iota
-	CIRCLE
-	TRIANGLE
-	ELLIPSE
-	RHOMBOID
-)
-
-func TypeOf(value interface{}) string {
-	switch value.(type) {
-	case int:
-		return "int"
-	case float64:
-		return "float64"
-	case bool:
-		return "bool"
-	case string:
-		return "string"
-	default:
-		return "unknown"
-	}
+type Operator interface {
+	add(Number) Number
 }
 
-func recoverPanic() {
-	if res := recover(); res != nil {
-		if err, ok := res.(error); ok {
-			log.Fatal(err.Error())
-		}
-	}
+type Number int
+
+func (n *Number) add(other Number) Number {
+	return *n + other
 }
 
 func main() {
-	defer recoverPanic()
+	addr := fmt.Sprintf("%s:%d", host, port)
 
-	t := reflect.TypeOf(User{})
-
-	if field, ok := t.FieldByName("Account"); ok {
-		fmt.Printf("%T\n", field.Tag)
-	} else {
-		panic("unknown field")
+	app := http.Server{
+		Addr:    addr,
+		Handler: nil,
 	}
 
-	score := 80.1
+	http.Handle("/", &IndexHandler{})
+	http.Handle("/about", &AboutHandler{})
 
-	fmt.Println(true || Between(90, 10, 90), math.Pow(math.Sqrt(score), 2) == score)
+	http.Handle("/download", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("start download ..."))
+	}))
 
-	shape := RECT
+	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+		protocol := r.URL.Scheme
+		queryStr := r.URL.RawQuery
+		query := r.URL.Query()
+		acceptEncoding := r.Header["Accept-Encoding"]
 
-	switch shape {
-	case RECT, RHOMBOID, TRIANGLE:
-		fmt.Printf("")
-	case CIRCLE, ELLIPSE:
-		fmt.Printf("")
-	default:
-		fmt.Printf("")
+		body := make([]byte, r.ContentLength)
+		r.Body.Read(body)
+
+		r.ParseForm()
+		r.ParseMultipartForm(1024)
+
+		fmt.Println(protocol, queryStr, query[""], acceptEncoding, string(body))
+
+		http.Redirect(w, r, "", http.StatusMovedPermanently)
+
+		w.Write([]byte("login"))
+
+	})
+
+	http.Handle("/404", http.NotFoundHandler())
+	http.Handle("/redirect", http.RedirectHandler("", http.StatusMovedPermanently))
+	http.Handle("/www", http.FileServer(http.Dir("")))
+
+	err := app.ListenAndServe()
+
+	if err != nil {
+		panic("oh, something is error !")
 	}
 
-	screenWidth := 980
+	title := "polyglot notebook vs jupyter"
 
-	switch {
-	case screenWidth < 576:
-		fmt.Printf("x-small")
-	case screenWidth < 768:
-		fmt.Printf("small")
-	case screenWidth < 992:
-		fmt.Printf("medium")
-	case screenWidth < 1200:
-		fmt.Printf("large")
-	case screenWidth < 1400:
-		fmt.Printf("extra large")
-	default:
-		fmt.Printf("extra extra large")
-	}
-
-	bytes := []byte("hi,golang")
-
-	for i := 0; i < len(bytes); i++ {
-		fmt.Printf("%c\n", bytes[i])
-	}
-
-	for _, ch := range bytes {
-		fmt.Printf("%c\n", ch)
-	}
-
-	fmt.Printf("%v %T\n", fmt.Errorf(""), fmt.Println)
-
-	func() {
-		fmt.Printf("")
-	}()
-
-	min := func(x, y int) int {
-		if x > y {
-			return y
-		} else {
-			return x
-		}
-	}
-
-	fmt.Println(min(61, 90))
-
+	fmt.Println(title)
 }
