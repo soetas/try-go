@@ -2,84 +2,51 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"text/template"
 )
 
-const host, port = "localhost", 5713
+func Main01() {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		tpl, _ := template.ParseFiles("template/index.html")
 
-type IndexHandler struct{}
-type AboutHandler struct{}
+		template.Must(template.New("").Parse(""))
 
-func (handler *IndexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	tpl, err := template.ParseFiles("")
-
-	if err == nil {
-		tpl.Execute(w, "")
-	}
-
-}
-
-func (handler *AboutHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("about me"))
-}
-
-type Operator interface {
-	add(Number) Number
-}
-
-type Number int
-
-func (n *Number) add(other Number) Number {
-	return *n + other
-}
-
-func main() {
-	addr := fmt.Sprintf("%s:%d", host, port)
-
-	app := http.Server{
-		Addr:    addr,
-		Handler: nil,
-	}
-
-	http.Handle("/", &IndexHandler{})
-	http.Handle("/about", &AboutHandler{})
-
-	http.Handle("/download", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("start download ..."))
-	}))
-
-	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
-		protocol := r.URL.Scheme
-		queryStr := r.URL.RawQuery
-		query := r.URL.Query()
-		acceptEncoding := r.Header["Accept-Encoding"]
-
-		body := make([]byte, r.ContentLength)
-		r.Body.Read(body)
-
-		r.ParseForm()
-		r.ParseMultipartForm(1024)
-
-		fmt.Println(protocol, queryStr, query[""], acceptEncoding, string(body))
-
-		http.Redirect(w, r, "", http.StatusMovedPermanently)
-
-		w.Write([]byte("login"))
-
+		tpl.ExecuteTemplate(w, "", "")
 	})
 
-	http.Handle("/404", http.NotFoundHandler())
-	http.Handle("/redirect", http.RedirectHandler("", http.StatusMovedPermanently))
-	http.Handle("/www", http.FileServer(http.Dir("")))
+	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			http.ServeFile(w, r, "template/login.html")
 
-	err := app.ListenAndServe()
+		case http.MethodPost:
+			if err := r.ParseMultipartForm(1024); err == nil {
+				formData := r.MultipartForm
+
+				avatar := formData.File["avatar"][0]
+				file, err := avatar.Open()
+
+				if err == nil {
+					data, _ := ioutil.ReadAll(file)
+					fmt.Fprintln(w, string(data))
+				}
+
+				fmt.Fprintln(w, formData.Value, r.FormValue("account"), r.PostFormValue("passwd"))
+			}
+
+		default:
+			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+			w.WriteHeader(http.StatusNotImplemented)
+			w.Write([]byte("method not implemented"))
+		}
+	})
+
+	err := http.ListenAndServe("localhost:5713", nil)
 
 	if err != nil {
-		panic("oh, something is error !")
+		panic("Oh, error has happened!")
 	}
 
-	title := "polyglot notebook vs jupyter"
-
-	fmt.Println(title)
 }

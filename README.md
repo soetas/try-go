@@ -49,11 +49,20 @@ LOOP:
 
 ## GMP
 
+GMP(Goroutine协程、Processor处理器和Thread线程)
+
 > 操作码(opcode)
 
 ## 协程
 
 并发和并行
+
+Go调度器的调度策略:
+  
+- 复用线程
+- 利用并行
+- 抢占
+- 全局协程队列
 
 ## 内存
 
