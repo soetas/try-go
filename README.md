@@ -73,7 +73,9 @@ Go调度器的调度策略:
 ## GO Modules
 
 ```sh
-go mod help
+go mod init <project-name>
+
+go mod tidy
 
 go env -w GO111MODULE=on
 
