@@ -8,12 +8,14 @@ time
 ```
 
 ```go
+type number = float64
+
 func init() {
   defer func() {
     // TODO ...
   }()
 
-LOOP:
+LABEL:
   // TODO ...
   
 }
