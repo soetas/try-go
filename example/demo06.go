@@ -31,7 +31,7 @@ func ParseInt(s string) (int, error) {
 	}
 }
 
-func main() {
+func Main06() {
 	rand.Seed(time.Now().UnixNano())
 	fmt.Println(rand.Float64(), Str(78.12), Str(false))
 
