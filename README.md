@@ -77,6 +77,8 @@ Go调度器的调度策略:
 ```sh
 go get -u <package@version>
 
+go mod help
+
 go mod init <project-name>
 
 go mod tidy
@@ -122,6 +124,11 @@ replace localPackage =>
 ## 测试
 
 ### 单元测试
+
+```sh
+go test 
+
+```
 
 ### 基准测试
 
