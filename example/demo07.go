@@ -8,13 +8,13 @@ import (
 	"log"
 )
 
-type Address struct {
+type Address01 struct {
 	Country string
 	City    string
 	Street  string `json:"-"`
 }
 
-type User struct {
+type User01 struct {
 	Account string `json:"account"`
 	Email   string `json:"email,omitempty"`
 	Address Address
@@ -32,7 +32,7 @@ func DivMod(x, y int) (int, int, error) {
 	return x / y, x % y, nil
 }
 
-func main() {
+func Main07() {
 	defer func() {
 		if err := recover(); err != nil {
 			log.Fatal(err)
@@ -54,13 +54,12 @@ func main() {
 		fmt.Println(string(json))
 	}
 
-	userData, _ := json.Marshal(&User{
+	userData, _ := json.Marshal(&User01{
 		Account: "",
 		Email:   "",
 		Address: Address{
 			Country: "",
 			City:    "",
-			Street:  "",
 		},
 	})
 

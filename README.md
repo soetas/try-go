@@ -75,11 +75,47 @@ Go调度器的调度策略:
 ## GO Modules
 
 ```sh
+go get -u <package@version>
+
 go mod init <project-name>
 
 go mod tidy
 
+go mod graph
+
+go mod download
+
+go mod verify 
+
+go mod why
+
+go mod edit 
+
+go mod vendor
+
+go list -m -u all
+
+go build 
+
+go install
+
 go env -w GO111MODULE=on
+
+```
+
+## Go Workspace
+
+```sh
+go work init
+
+go work use <pkg>
+
+```
+
+```txt
+require localPackage
+
+replace localPackage => 
 
 ```
 

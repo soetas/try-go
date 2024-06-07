@@ -1,8 +1,11 @@
 package random
 
-import "fmt"
+import (
+	"math/rand"
+	"time"
+)
 
-func Choice(args ...interface{}) {
-	fmt.Println(len(args))
-
+func Choice(slice []interface{}) interface{} {
+	rand.Seed(time.Now().UnixNano())
+	return slice[rand.Intn(len(slice))]
 }
