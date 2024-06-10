@@ -24,6 +24,8 @@ LABEL:
 
 ## 编码
 
+> 整数环绕
+
 字符集:
 
 - ascii
@@ -102,6 +104,7 @@ go build
 go install
 
 go env -w GO111MODULE=on
+go env -w GOPROXY=https://goproxy.cn, direct
 
 ```
 
