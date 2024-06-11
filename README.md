@@ -136,3 +136,79 @@ go test
 ### 基准测试
 
 ### 模糊测试
+
+## ORM
+
+> NoSQL(not just sql)
+
+主键(primary key)和外键(foreign key)
+
+```sql
+CREATE DATABASE `db_name`;
+
+SHOW DATABASES;
+
+DROP DATABASE `db_name`;
+
+USE `db_name`;
+
+CREATE TABLE `table_name`(
+  `id` INT AUTO_INCREMENT,
+  `user_id` INT,
+  `name` VARCHAR(30) NOT NULL,
+  `gender` VARCHAR(10) DEFAULT 'female',
+  `create_date` DATE UNIQUE,
+  PRIMARY KEY(`id`),
+  FOREIGN KEY(`user_id`) REFERENCES `table_name`(`field_name`) ON DELETE CASCADE,
+  FOREIGN KEY(`user_id`) REFERENCES `table_name`(`field_name`) ON DELETE SET NULL 
+);
+
+DESCRIBE `table_name`;
+
+DROP TABLE `table_name`;
+
+SELECT * FROM `table_name`;
+SELECT `field_name`, `field_name`, ... FROM `table_name`;
+
+SELECT `field_name`, `field_name`, ... 
+FROM `table_name`
+ORDER BY `field_name`, `field_name` ... 
+DESC
+LIMIT n;
+
+ALTER TABLE `table_name` ADD `field_name` DECIMAL(3,2);
+ALTER TABLE `table_name` DROP COLUMN `field_name`;
+
+INSERT INTO `table_name` VALUES(v1, v2, ...);
+INSERT INTO `table_name`(n1, n2, ...) VALUES(v1, v2, ...);
+
+UPDATE `table_name` 
+SET `field_name` = `field_value`, `field_name` = `field_value` 
+WHERE `create_date` LIKE '____-12-__' OR `phone` LIKE '166%';
+
+DELETE FROM `table_name`
+WHERE `major` IN ('history', 'english', 'chinese') AND `score` <> 60;
+
+-- aggregate function
+
+SELECT COUNT(*) FROM `table_name`;
+SELECT AVG(`field_name`) FROM `table_name`;
+SELECT SUM(`field_name`) FROM `table_name`;
+SELECT MAX(`field_name`) FROM `table_name`;
+SELECT MIN(`field_name`) FROM `table_name`;
+
+SELECT `field_name` AS `alias` FROM `table_name` UNION SELECT `field_name` FROM `table_name`;
+
+SELECT `field_name` FROM `table_name` 
+LEFT JOIN `table_name` ON `table_name`.`field_name` = `field_name`;
+
+-- sub query
+
+SELECT `field_name` FROM `table_name` 
+WHERE `field_name` = (
+  SELECT `field_name` FROM `table_name` 
+  WHERE expr
+);
+
+
+```
