@@ -32,4 +32,7 @@ func main() {
 		Email: "wi@hov.in",
 	})
 
+	s := new([]int)
+
+	fmt.Printf("%#v %t\n", s, *s == nil)
 }

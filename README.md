@@ -26,6 +26,11 @@ LABEL:
 
 Go的多版本管理工具: [GVM](https://github.com/moovweb/gvm)
 
+```sh
+go tool compile -m main.go
+
+```
+
 ## 编码
 
 > 整数环绕
