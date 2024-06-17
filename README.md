@@ -33,6 +33,8 @@ Go的多版本管理工具: [GVM](https://github.com/moovweb/gvm)
 ```sh
 go tool compile -m main.go
 
+GOOS=linux GOARCH=amd64 go build main.go
+
 ```
 
 ## 编码
@@ -56,6 +58,8 @@ go tool compile -m main.go
 | 0 ~ 127 | 0??????? |
 | 128 ~ 2047 | 110????? 10?????? |
 | 2048 ~ 65535 | 1110???? 10?????? 10?????? |
+
+> 对于UTF8编码，一个汉字占用3个字节
 
 ## 扩容
 
