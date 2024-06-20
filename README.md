@@ -155,7 +155,7 @@ replace localPackage =>
 ### 单元测试
 
 ```sh
-go test 
+go test [-v]
 
 ```
 
