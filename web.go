@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/http/cookiejar"
 	"net/url"
 	"os"
 	"strings"
@@ -169,11 +170,22 @@ func Fetch(url string, option FetchOption) FetchResponse {
 
 	switch strings.ToUpper(method) {
 	case "GET":
-		res, err = http.Get(url)
+		jar, _ := cookiejar.New(nil)
+
+		client := http.Client{
+			CheckRedirect: func(req *http.Request, via []*http.Request) error {
+				// return http.ErrUseLastResponse
+				return nil
+			},
+			Jar: jar,
+		}
+		req, _ := http.NewRequest(http.MethodGet, url, nil)
+
+		res, err = client.Do(req)
 	case "POST":
 		var str string
 
-		if contentType == "application/x-www-form-encoding" {
+		if contentType == "application/x-www-form-urlencoded" {
 			formData := make(Pairs)
 
 			for k, v := range body {
@@ -181,6 +193,9 @@ func Fetch(url string, option FetchOption) FetchResponse {
 			}
 
 			str = formData.Encode()
+		} else if contentType == "application/json" {
+			bytes, _ := json.Marshal(body)
+			str = string(bytes)
 		}
 
 		res, err = http.Post(url, contentType, strings.NewReader(str))
@@ -190,7 +205,16 @@ func Fetch(url string, option FetchOption) FetchResponse {
 
 		req.Header.Add("Accept-Language", "zh-CN,en")
 
-		res, err = http.DefaultClient.Do(req)
+		client := &http.Client{
+			CheckRedirect: func(req *http.Request, via []*http.Request) error {
+				if len(via) > 5 {
+					return fmt.Errorf("")
+				}
+				return nil
+			},
+		}
+
+		res, err = client.Do(req)
 	default:
 		panic("")
 	}

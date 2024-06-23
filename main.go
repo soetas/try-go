@@ -2,59 +2,53 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"os"
+	"time"
 )
 
+var logger = Logger{
+	Scope:    "local",
+	Level:    "Debug",
+	Filename: "system.log",
+}
+
 func main() {
-	url := "https://httpbin.org/put"
+	user := struct {
+		account string
+		email   string
+	}{"Derek Olson", "fivasem@tepnok.es"}
 
-	fmt.Printf("%+v\n", Fetch(url, FetchOption{
-		Method: "put",
-		Params: map[string]interface{}{
-			"skip":  1,
-			"limit": 3,
-		},
-	}).Header.Get("Content-Type"))
+	Log(true, "hi,golang", 78.2)
 
-	Download("https://haowallpaper.com/link/common/file/getCroppingImg/15024072666287424", "poster.png")
+	fmt.Printf("%v %f\n%v\n%+v\n%#v\n", math.Pi, 67.00218918, user, user, &user)
+	fmt.Println(Bin(255), Chr(97))
 
-	os.Exit(0)
+	var data bytes = []byte("hello,world")
+	var minute str = "7"
 
-	app := Koa{
-		db: Database{
-			Username: "root",
-			Password: "123456+",
-			Host:     "localhost",
-			Port:     3306,
-			Name:     "test",
-		},
-	}
+	fmt.Println(data.Decode(), minute.PadStart(2, "0"))
 
-	app.Get("/", func(req *HTTPRequest, res *HTTPResponse) interface{} {
-		return "hi, golang!"
-	})
+	logger.Info("", "start running ...")
+	logger.Info("", "detection system environment ...")
 
-	app.Get("/login", func(req *HTTPRequest, res *HTTPResponse) interface{} {
-		return "welcome to login"
-	})
+	// phone := Input("enter your phone: ")
+	// fmt.Println(phone)
 
-	app.Post("/login", func(h1 *HTTPRequest, h2 *HTTPResponse) interface{} {
-		return map[string]interface{}{
-			"statusCode": 200,
-			"message":    "success",
-		}
-	})
+	pwd, _ := os.Getwd()
 
-	app.Get("/api/users", func(req *HTTPRequest, res *HTTPResponse) interface{} {
-		return []map[string]interface{}{
-			{"username": "Lena May", "email": "zezam@rino.sk"},
-			{"username": "Frederick Wood", "email": "naewu@panlowzeg.ru"},
-			{"username": "Corey Steele", "email": "poj@vigkek.bw"},
-		}
-	})
+	Tree(pwd, []string{".git"})
 
-	app.Listen("localhost", 5713, func() {
-		fmt.Println("server is ready on http://localhost:5713/")
-	})
+	Exec("")
+
+	fmt.Println(GetGoPath(), Now())
+
+	SetTimeout(func() {
+		fmt.Println(Now())
+	}, 3)
+
+	SetInterval(func(t time.Time) {
+		fmt.Println(t)
+	}, 5)
 
 }
