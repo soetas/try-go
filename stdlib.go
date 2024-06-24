@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"math/rand"
 	"os"
 	"path"
@@ -188,5 +190,40 @@ func GetCommandArgs() {
 		for i, arg := range os.Args {
 			fmt.Printf("[%d]: %s\n", i, arg)
 		}
+	}
+}
+
+func ReadFile(filename string, bufferSize int) string {
+	file, err := os.Open(filename)
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer file.Close()
+
+	stat, _ := file.Stat()
+
+	if stat.Size() <= 1024 {
+		content, err := ioutil.ReadAll(file)
+		if err != nil {
+			panic(err)
+		}
+		return string(content)
+	} else {
+		buf := make([]byte, bufferSize)
+		content := make([]byte, 0)
+
+		for {
+			n, err := file.Read(buf)
+
+			if n == 0 || err == io.EOF {
+				break
+			}
+
+			content = append(content, buf[:n]...)
+		}
+
+		return string(content)
 	}
 }

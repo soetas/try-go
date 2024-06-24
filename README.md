@@ -37,6 +37,8 @@ go tool compile -m main.go
 
 GOOS=linux GOARCH=amd64 go build main.go
 
+GODEBUG=gctrace=1 go run main.go
+
 ```
 
 ## 编码
