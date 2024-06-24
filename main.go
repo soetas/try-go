@@ -1,54 +1,89 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
-	"math"
+	"log"
 	"os"
-	"time"
+	"sort"
 )
 
-var logger = Logger{
-	Scope:    "local",
-	Level:    "Debug",
-	Filename: "system.log",
+var enableLog = false
+
+type Response struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }
 
 func main() {
-	user := struct {
-		account string
-		email   string
-	}{"Derek Olson", "fivasem@tepnok.es"}
+	if enableLog {
+		logFile, err := os.OpenFile("system.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 
-	Log(true, "hi,golang", 78.2)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
 
-	fmt.Printf("%v %f\n%v\n%+v\n%#v\n", math.Pi, 67.00218918, user, user, &user)
-	fmt.Println(Bin(255), Chr(97))
+		log.SetFlags(log.LstdFlags | log.Lshortfile)
+		log.SetPrefix("[Output] ")
+		log.SetOutput(logFile)
 
-	var data bytes = []byte("hello,world")
-	var minute str = "7"
+		log.Print("start install ...")
+		log.Printf("fetch latest version of packages ...")
+		log.Println("waiting for install ...")
+	}
 
-	fmt.Println(data.Decode(), minute.PadStart(2, "0"))
+	if divVal, _, err := Divmod(19, 3); err == nil {
+		fmt.Println(divVal)
+	}
 
-	logger.Info("", "start running ...")
-	logger.Info("", "detection system environment ...")
+	fmt.Printf("%s %t\n", bytes.ToUpper([]byte("hi,李焕英")),
+		bytes.EqualFold([]byte("hellO,World"), []byte("HEllo,worlD")))
 
-	// phone := Input("enter your phone: ")
-	// fmt.Println(phone)
+	url := "https://fanyi.youdao.com/#/"
+	hostname := bytes.Trim(bytes.TrimPrefix([]byte(url), []byte("https:")), "/#")
 
-	pwd, _ := os.Getwd()
+	fmt.Printf("%s\n", hostname)
+	fmt.Printf("%s\n", bytes.Repeat([]byte{'='}, 80))
+	fmt.Println(bytes.Runes([]byte("hi,李焕英")))
 
-	Tree(pwd, []string{".git"})
+	users := make([]string, 0, 5)
 
-	Exec("")
+	users = append(users, []string{"Chris May", "Polly Hubbard"}...)
 
-	fmt.Println(GetGoPath(), Now())
+	fmt.Println(len(users), cap(users), users)
 
-	SetTimeout(func() {
-		fmt.Println(Now())
-	}, 3)
+	res := Response{
+		Code:    2000,
+		Message: "success",
+		Data: []map[string]interface{}{
+			{
+				"address": nil,
+			},
+			{},
+			{},
+		},
+	}
 
-	SetInterval(func(t time.Time) {
-		fmt.Println(t)
-	}, 5)
+	if result, err := json.Marshal(res); err == nil {
+		fmt.Println(string(result))
+	}
+
+	scores := []float64{78, 88, 86, 90, 67}
+
+	sort.Float64s(scores)
+
+	fmt.Println(scores, Choice([]interface{}{"green", "navy", "tomato", "orange", "pink"}))
+
+	// GetCommandArgs()
+
+	program := Command{}
+
+	program.Name("version")
+	program.Name("open")
+	program.Name("browser")
+
+	program.Parse()
 
 }

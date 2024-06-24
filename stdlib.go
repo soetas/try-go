@@ -2,7 +2,9 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
+	"math/rand"
 	"os"
 	"path"
 	"strings"
@@ -11,16 +13,23 @@ import (
 
 var ErrType = fmt.Errorf("")
 
-type any = interface{}
-type bytes []byte
-type str string
-type StringSlice []string
+type ZeroDivisionError struct{}
 
-func (b bytes) Decode() string {
+func (z *ZeroDivisionError) Error() string {
+	return ""
+}
+
+type any = interface{}
+type Bytes []byte
+type Str string
+type StringSlice []string
+type AnySlice []interface{}
+
+func (b Bytes) Decode() string {
 	return string(b)
 }
 
-func (s str) PadStart(targetLength int, padString string) string {
+func (s Str) PadStart(targetLength int, padString string) string {
 	format := fmt.Sprintf("%%%s%ds", padString, targetLength)
 	return fmt.Sprintf(format, s)
 }
@@ -32,6 +41,18 @@ func (s StringSlice) Contain(value string) bool {
 		}
 	}
 	return false
+}
+
+func (a AnySlice) Len() int {
+	return len(a)
+}
+
+func (a AnySlice) Less(i, j int) bool {
+	return false
+}
+
+func (a AnySlice) Swap(i, j int) {
+	a[i], a[j] = a[j], a[i]
 }
 
 type Logger struct {
@@ -59,6 +80,20 @@ func (l *Logger) Info(format, message string) {
 	defer file.Close()
 
 	fmt.Fprintf(file, "%s\r\n", message)
+}
+
+type Command struct{}
+
+func (c *Command) Name(name string) *Command {
+	return c
+}
+
+func (c *Command) Description(desc string) *Command {
+	return c
+}
+
+func (c *Command) Parse() {
+	flag.Parse()
 }
 
 func Log(values ...any) {
@@ -129,5 +164,29 @@ func SetTimeout(callback func(), seconds time.Duration) {
 func SetInterval(callback func(time.Time), seconds time.Duration) {
 	for current := range time.Tick(time.Second * seconds) {
 		callback(current)
+	}
+}
+
+func Divmod(x, y int) (divVal int, modVal int, err error) {
+	if y == 0 {
+		divVal, modVal, err = 0, 0, &ZeroDivisionError{}
+	} else {
+		divVal, modVal, err = x/y, x%y, nil
+	}
+	return
+}
+
+func Sorted(m []map[string]any, k string) {}
+
+func Choice(s []interface{}) interface{} {
+	rand.Seed(time.Now().UnixNano())
+	return s[rand.Intn(len(s))]
+}
+
+func GetCommandArgs() {
+	if len(os.Args) >= 2 {
+		for i, arg := range os.Args {
+			fmt.Printf("[%d]: %s\n", i, arg)
+		}
 	}
 }
