@@ -1,11 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
+	"mime/multipart"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
@@ -174,8 +176,8 @@ func Fetch(url string, option FetchOption) FetchResponse {
 
 		client := http.Client{
 			CheckRedirect: func(req *http.Request, via []*http.Request) error {
-				// return http.ErrUseLastResponse
-				return nil
+				// disable redirect
+				return http.ErrUseLastResponse
 			},
 			Jar: jar,
 		}
@@ -207,9 +209,11 @@ func Fetch(url string, option FetchOption) FetchResponse {
 
 		client := &http.Client{
 			CheckRedirect: func(req *http.Request, via []*http.Request) error {
+				// limit redirect
 				if len(via) > 5 {
 					return fmt.Errorf("")
 				}
+
 				return nil
 			},
 		}
@@ -248,5 +252,28 @@ func Download(url, filename string) {
 	if _, err := io.Copy(file, &reader); err == nil {
 		fmt.Printf("download finish ^_^ \n")
 	}
+}
+
+func Upload(url string) {
+	buf := &bytes.Buffer{}
+
+	writer := multipart.NewWriter(buf)
+
+	writer.WriteField("account", "Owen Hall")
+	writer.WriteField("email", "pilesfu@zavse.pt")
+
+	if writer, err := writer.CreateFormFile("avatar", "avatar"); err == nil {
+		fp, _ := os.Open("")
+
+		defer fp.Close()
+
+		io.Copy(writer, fp)
+	}
+
+	defer writer.Close()
+
+	// http.Post(url, writer.FormDataContentType(), buf)
+
+	fmt.Println(buf.String(), writer.FormDataContentType())
 
 }
