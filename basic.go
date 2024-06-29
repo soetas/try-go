@@ -91,3 +91,39 @@ func Recover() {
 		}
 	}
 }
+
+type Slice struct {
+	Start int
+	End   int
+	Step  int
+}
+
+func Range(start, end, step int) *Slice {
+	return &Slice{
+		Start: start,
+		End:   end,
+		Step:  step,
+	}
+}
+
+type Set struct {
+	Items []any
+}
+
+func NewSet(values ...any) *Set {
+	return &Set{
+		Items: values,
+	}
+}
+
+func CreateCounter(initial int) (int, map[string]func()) {
+	count := initial
+
+	actions := map[string]func(){
+		"inc":   func() { count++ },
+		"dec":   func() { count-- },
+		"reset": func() { count = initial },
+	}
+
+	return count, actions
+}

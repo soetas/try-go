@@ -19,6 +19,8 @@ func init() {
     // TODO ...
   }()
 
+  goto LABEL
+
 LABEL:
   // TODO ...
   
