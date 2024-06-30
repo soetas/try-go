@@ -12,9 +12,9 @@ type (
 	Char   rune
 )
 
-var keywords = []string{"package", "import", "var", "func", "type"}
+var Keywords = []string{"package", "import", "var", "func", "type"}
 
-const defaultEncoding = "utf-8"
+const DefaultEncoding = "utf-8"
 
 const (
 	Ayu = iota
@@ -126,4 +126,34 @@ func CreateCounter(initial int) (int, map[string]func()) {
 	}
 
 	return count, actions
+}
+
+func Reversed(s []any) []any {
+	result := make([]any, 0, len(s))
+
+	for i := len(s) - 1; i >= 0; i-- {
+		result = append(result, s[i])
+	}
+
+	return result
+}
+
+type List []any
+
+func (l *List) Reverse() {
+	for i, j := 0, len(*l)-1; i < j; i, j = i+1, j-1 {
+		(*l)[i], (*l)[j] = (*l)[j], (*l)[i]
+	}
+}
+
+func (l *List) Sort() {}
+
+type Matrix struct {
+	Row  int
+	Col  int
+	Data []float64
+}
+
+func (m *Matrix) ToArray() {
+
 }

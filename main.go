@@ -1,16 +1,28 @@
 package main
 
+import "github.com/soetas/webgo/rand"
+
+const maxSize = 10
+
 func main() {
-	Printf("%v %v", keywords, defaultEncoding)
-	Printf("%#v", Range(1, 10, 2))
-	Printf("%T %v", Range, NewSet(0, false, -9i, 6.21))
+	var (
+		pointer *int
+		array   [maxSize]int
+		slice   []int
+		dict    map[string]interface{}
+	)
 
-	count, actions := CreateCounter(0)
+	Printf("%v %v %v %v", pointer, array, slice, dict)
+	Printf("%v", Reversed([]any{6, true, 81.2, 1 - 8i, "Ophelia Quinn"}))
 
-	Printf("%v", count)
+	lst := List{67, 19, 45, 99, 10, 55, 80}
 
-	actions["inc"]()
+	Printf("%v", lst)
 
-	Printf("%v", count)
+	lst.Reverse()
+
+	Printf("%v", lst)
+
+	Printf("%v", rand.Color())
 
 }
