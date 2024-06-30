@@ -176,3 +176,24 @@ func HasKey(m map[string]any, k string) bool {
 func IsNil(obj any) bool {
 	return obj == nil
 }
+
+func IsBool(v any) bool {
+	if _, ok := v.(bool); ok {
+		return true
+	} else {
+		return false
+	}
+}
+
+func String(v any) string {
+	switch val := v.(type) {
+	case bool:
+		return strconv.FormatBool(val)
+	case int:
+		return strconv.FormatInt(int64(val), 10)
+	case float64:
+		return strconv.FormatFloat(val, 'f', 2, 64)
+	default:
+		return fmt.Sprintf("%v", v)
+	}
+}

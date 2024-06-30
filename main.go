@@ -1,72 +1,84 @@
 package main
 
+import "strings"
+
+type Model struct{}
+
 type Post struct {
-	UserId int
-	Id     int
-	Title  string
-	Body   string
+	Model
+	Id    int
+	Title string
+	Body  string
 }
 
-type Address struct {
-	Country string
-	City    string
-	Street  string
+func (m *Model) Save()  {}
+func (m Model) Delete() {}
+
+func (p *Post) Save() {
+	Printf("save post record to database")
 }
 
-type User struct {
-	*Address
-	City string
+type Painter interface {
+	Paint()
 }
 
-func (u *User) program() {}
+type Renderer interface {
+	Render()
+}
 
-// func program() {}
+type Shaper interface {
+	Painter
+}
+
+type Circle struct {
+	X, Y   float64
+	Radius float64
+}
+
+type Rect struct {
+	X, Y   float64
+	Width  float64
+	Height float64
+}
+
+type Square struct {
+	X, Y float64
+	Side float64
+}
+
+func (c *Circle) Paint() {
+	Printf("paint circle at (%.2f, %.2f)", c.X, c.Y)
+}
+
+func (r *Rect) Paint() {
+	Printf("paint rect at (%.2f, %.2f)", r.X, r.Y)
+}
+
+func (t *Square) Paint() {
+	Printf("paint square at (%.2f, %.2f)", t.X, t.Y)
+}
 
 func main() {
-	src := []string{"python", "c++", "java"}
-	dst := []string{"c#", "dart", "c", "javascript", "go"}
-
-	customer := map[string]any{
-		"name":   "Lola Chapman",
-		"gender": "male",
-		"products": []string{
-			"short sleeve",
-			"sweater",
-			"hat",
-		},
+	post := Post{
+		Model: Model{},
+		Id:    1,
+		Title: "",
+		Body:  "",
 	}
 
-	posts := [...]Post{
-		3: {},
-		5: {},
+	post.Save()
+	post.Model.Save()
+
+	Printf("%t %T %T %T", Model{} == Model{}, post.Save, Model.Delete, (*Model).Save)
+
+	var shape Shaper = &Circle{
+		X: 56.18212,
+		Y: 70.12178,
 	}
 
-	var pointerOfInt *int
+	shape.Paint()
 
-	pointerOfArray := new([3]int)
-
-	arrOfPointers := [...]*int{
-		3: new(int),
-	}
-
-	copy(dst, src)
-
-	Printf("%v %d %t", dst, len(customer), Hashable([]int{}))
-	Printf("%t", HasKey(customer, "gender"))
-	Printf("%v %t", posts, Post{Id: 0, UserId: 0, Title: "", Body: ""} == Post{})
-	Printf("%p %t %T %T", &posts, IsNil(pointerOfInt), pointerOfArray, arrOfPointers)
-
-	user := User{
-		Address: &Address{
-			Country: "China",
-			City:    "Tj",
-			Street:  "",
-		},
-		City: "Bj",
-	}
-
-	Printf("%v %v", user.Address.Country, user.City)
-
-	user.program()
+	Printf("%t %t", IsBool(false), IsBool(0))
+	Printf("%t\n%s", strings.Contains("hi,golang", "go"), strings.Join([]string{}, " "))
 
 }
