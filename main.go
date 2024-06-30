@@ -1,28 +1,72 @@
 package main
 
-import "github.com/soetas/webgo/rand"
+type Post struct {
+	UserId int
+	Id     int
+	Title  string
+	Body   string
+}
 
-const maxSize = 10
+type Address struct {
+	Country string
+	City    string
+	Street  string
+}
+
+type User struct {
+	*Address
+	City string
+}
+
+func (u *User) program() {}
+
+// func program() {}
 
 func main() {
-	var (
-		pointer *int
-		array   [maxSize]int
-		slice   []int
-		dict    map[string]interface{}
-	)
+	src := []string{"python", "c++", "java"}
+	dst := []string{"c#", "dart", "c", "javascript", "go"}
 
-	Printf("%v %v %v %v", pointer, array, slice, dict)
-	Printf("%v", Reversed([]any{6, true, 81.2, 1 - 8i, "Ophelia Quinn"}))
+	customer := map[string]any{
+		"name":   "Lola Chapman",
+		"gender": "male",
+		"products": []string{
+			"short sleeve",
+			"sweater",
+			"hat",
+		},
+	}
 
-	lst := List{67, 19, 45, 99, 10, 55, 80}
+	posts := [...]Post{
+		3: {},
+		5: {},
+	}
 
-	Printf("%v", lst)
+	var pointerOfInt *int
 
-	lst.Reverse()
+	pointerOfArray := new([3]int)
 
-	Printf("%v", lst)
+	arrOfPointers := [...]*int{
+		3: new(int),
+	}
 
-	Printf("%v", rand.Color())
+	copy(dst, src)
+
+	Printf("%v %d %t", dst, len(customer), Hashable([]int{}))
+	Printf("%t", HasKey(customer, "gender"))
+	Printf("%v %t", posts, Post{Id: 0, UserId: 0, Title: "", Body: ""} == Post{})
+	Printf("%p %t %T %T", &posts, IsNil(pointerOfInt), pointerOfArray, arrOfPointers)
+
+	user := User{
+		Address: &Address{
+			Country: "China",
+			City:    "Tj",
+			Street:  "",
+		},
+		City: "Bj",
+	}
+
+	Printf("%v %v", user.Address.Country, user.City)
+
+	user.program()
 
 }

@@ -154,6 +154,25 @@ type Matrix struct {
 	Data []float64
 }
 
-func (m *Matrix) ToArray() {
+func (m *Matrix) ToArray() {}
 
+func Hashable(obj any) bool {
+	switch obj.(type) {
+	case []int, []float64, []string:
+		return false
+	default:
+		return true
+	}
+}
+
+func HasKey(m map[string]any, k string) bool {
+	if _, exist := m[k]; exist {
+		return true
+	} else {
+		return false
+	}
+}
+
+func IsNil(obj any) bool {
+	return obj == nil
 }
