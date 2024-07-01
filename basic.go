@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	_ "unsafe"
 )
@@ -190,10 +191,62 @@ func String(v any) string {
 	case bool:
 		return strconv.FormatBool(val)
 	case int:
-		return strconv.FormatInt(int64(val), 10)
+		return strconv.Itoa(val)
 	case float64:
-		return strconv.FormatFloat(val, 'f', 2, 64)
+		return strconv.FormatFloat(val, 'f', 6, 64)
 	default:
 		return fmt.Sprintf("%v", v)
 	}
+}
+
+func Hex(v int64) string {
+	return "0x" + strconv.FormatInt(v, 16)
+}
+
+func ParseInt(s string) int {
+	v, err := strconv.ParseInt(s, 10, 64)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return int(v)
+}
+
+func ParseFloat(s string) float64 {
+	v, err := strconv.ParseFloat(s, 64)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return v
+}
+
+func Create(filename string) *os.File {
+	file, err := os.Create(filename)
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer file.Close()
+
+	file.Write([]byte(""))
+	file.WriteString("")
+	file.WriteAt([]byte(""), int64(os.SEEK_CUR))
+
+	return file
+}
+
+func Open(filename string) {
+	file, _ := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_RDWR, os.ModePerm)
+
+	defer file.Close()
+
+	block := make([]byte, 1024)
+
+	file.Read(block)
+	file.ReadAt(block, int64(os.SEEK_CUR))
+
 }
